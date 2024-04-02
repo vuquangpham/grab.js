@@ -9,7 +9,7 @@ export const INSTANCE_CLASSES = {
  * Available events type
  */
 export const EVENTS = {
-  DOWN: [
+  down: [
     {
       eventName: "mousedown",
       type: ["all", "mouse"],
@@ -19,7 +19,7 @@ export const EVENTS = {
       type: ["all", "touch"],
     },
   ],
-  MOVE: [
+  move: [
     {
       eventName: "mousemove",
       type: ["all", "mouse"],
@@ -29,7 +29,7 @@ export const EVENTS = {
       type: ["all", "touch"],
     },
   ],
-  UP: [
+  up: [
     {
       eventName: "mouseup",
       type: ["all", "mouse"],

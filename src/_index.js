@@ -16,6 +16,10 @@ class Grab {
     const validatedOptions = {
       id: uid(),
       target: null,
+
+      // ["all", "mouse", "touch"]
+      type: "all",
+      grab: true,
       ...options,
     };
     validatedOptions.target = validateTarget(validatedOptions.target);
