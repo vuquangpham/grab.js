@@ -24,6 +24,20 @@ export default class Instance {
     // grab event
     this.grab = {
       isEntered: false,
+      pointer: {
+        x: {
+          start: 0,
+          end: 0,
+        },
+        y: {
+          start: 0,
+          end: 0,
+        },
+      },
+      distance: {
+        x: 0,
+        y: 0,
+      },
     };
 
     // init

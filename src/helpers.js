@@ -124,7 +124,12 @@ const initDownEvent = (context, eventKey, filteredEvents) => {
     // init event listeners
     context.listeners.add(target, eventName, (e) => {
       if (isGrabEvent) {
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
         context.grab.isEntered = true;
+        context.grab.pointer.x.start = clientX;
+        context.grab.pointer.y.start = clientY;
       }
 
       // returned params
@@ -173,8 +178,26 @@ const initMoveEvent = (context, eventKey, filteredEvents) => {
         // not entered => return
         if (!context.grab?.isEntered) return;
 
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+        // update pointer
+        context.grab.pointer.x.end = clientX;
+        context.grab.pointer.y.end = clientY;
+
+        // update distance
+        context.grab.distance.x =
+          context.grab.pointer.x.end - context.grab.pointer.x.start;
+
+        context.grab.distance.y =
+          context.grab.pointer.y.end - context.grab.pointer.y.start;
+
         // trigger event
-        triggerEvents({ context, eventName: "grab", returnedParams: {} });
+        triggerEvents({
+          context,
+          eventName: "grab",
+          returnedParams: [...returnedParams, { grab: context.grab }],
+        });
       }
     });
 
@@ -200,6 +223,16 @@ const initUpEvent = (context, eventKey, filteredEvents) => {
     context.listeners.add(target, eventName, (e) => {
       if (isGrabEvent) {
         context.grab.isEntered = false;
+
+        // clear pointer
+        context.grab.pointer.x.start = 0;
+        context.grab.pointer.x.start = 0;
+        context.grab.pointer.x.end = 0;
+        context.grab.pointer.y.end = 0;
+
+        // clear distance
+        context.grab.distance.x = 0;
+        context.grab.distance.y = 0;
       }
 
       // returned params

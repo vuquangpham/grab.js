@@ -24,29 +24,21 @@ Grab.create({
 
   events: {
     // mouse events
-    mousedown: () => {
-      console.log("down");
-    },
+    mousedown: () => {},
     mousemove: () => {},
     mouseup: () => {},
 
     // touch events
-    touchstart: () => {
-      console.log("start");
-    },
+    touchstart: () => {},
     touchmove: () => {},
     touchend: () => {},
 
     // shared events
-    down: () => {
-      console.log("shared event");
-    },
+    down: () => {},
     up: () => {},
     move: () => {},
 
     // for grab event
-    grab: () => {
-      console.log("grab");
-    },
+    grab: () => {},
   },
 });
