@@ -20,7 +20,7 @@ Grab.create({
   target: document.body,
 
   type: "all",
-  grab: false,
+  grab: true,
 
   events: {
     // mouse events
@@ -45,6 +45,8 @@ Grab.create({
     move: () => {},
 
     // for grab event
-    grab: () => {},
+    grab: () => {
+      console.log("grab");
+    },
   },
 });

@@ -36,20 +36,9 @@ export function init(context) {
   context.id = context.options.id;
 
   // init events
-  initEventType(context);
+  initEvents(context);
   return true;
 }
-
-/**
- * Init events
- * @param {Object} context
- */
-const initEventType = (context) => {
-  const isGrabEvent = context.options.grab;
-
-  // get the events list
-  initEventsListener(context);
-};
 
 /**
  * Init events based on array
@@ -57,7 +46,7 @@ const initEventType = (context) => {
  * @param {Array} events
  * @param {Boolean} isGrabEvent
  */
-const initEventsListener = (context) => {
+const initEvents = (context) => {
   const eventType = context.options.type;
 
   Object.keys(EVENTS).forEach((eventKey) => {
@@ -90,10 +79,14 @@ const initEventsListener = (context) => {
 const triggerEvents = ({ context, eventName, eventKey, returnedParams }) => {
   // trigger event based on event name
   // for example: mousemove, touchmove
-  context.events.trigger(eventName, returnedParams);
+  if (eventName) {
+    context.events.trigger(eventName, returnedParams);
+  }
 
   // trigger global event
-  context.events.trigger(eventKey, returnedParams);
+  if (eventKey) {
+    context.events.trigger(eventKey, returnedParams);
+  }
 };
 
 /**
@@ -107,12 +100,12 @@ const registerCallbacks = ({ context, eventName, eventKey }) => {
 
   // event independent
   const fn = context.options.events[eventName];
-  if (isFunction(fn)) {
+  if (isFunction(fn) && !context.events.callbacks[eventName]) {
     context.events.on(eventName, fn);
   }
 
   // init shared event
-  const sharedFn = context.options.events[eventKey];
+  const sharedFn = context.options.events[eventKey] || null;
   if (isFunction(sharedFn) && !context.events.callbacks[eventKey]) {
     context.events.on(eventKey, sharedFn);
   }
@@ -123,12 +116,17 @@ const registerCallbacks = ({ context, eventName, eventKey }) => {
  */
 const initDownEvent = (context, eventKey, filteredEvents) => {
   const target = context.target;
+  const isGrabEvent = context.options.grab;
 
   filteredEvents.forEach((event) => {
     const { eventName } = event;
 
     // init event listeners
     context.listeners.add(target, eventName, (e) => {
+      if (isGrabEvent) {
+        context.grab.isEntered = true;
+      }
+
       // returned params
       const returnedParams = [
         context,
@@ -152,10 +150,10 @@ const initDownEvent = (context, eventKey, filteredEvents) => {
  */
 const initMoveEvent = (context, eventKey, filteredEvents) => {
   const target = context.target;
+  const isGrabEvent = context.options.grab;
 
   filteredEvents.forEach((event) => {
     const { eventName } = event;
-
     // init event listeners
     context.listeners.add(target, eventName, (e) => {
       // returned params
@@ -169,10 +167,22 @@ const initMoveEvent = (context, eventKey, filteredEvents) => {
 
       // trigger events
       triggerEvents({ context, eventName, eventKey, returnedParams });
+
+      // trigger grab event
+      if (isGrabEvent) {
+        // not entered => return
+        if (!context.grab?.isEntered) return;
+
+        // trigger event
+        triggerEvents({ context, eventName: "grab", returnedParams: {} });
+      }
     });
 
     // register callbacks
     registerCallbacks({ context, eventName, eventKey });
+
+    // register grab callback
+    registerCallbacks({ context, eventName: "grab" });
   });
 };
 
@@ -181,12 +191,17 @@ const initMoveEvent = (context, eventKey, filteredEvents) => {
  */
 const initUpEvent = (context, eventKey, filteredEvents) => {
   const target = context.target;
+  const isGrabEvent = context.options.grab;
 
   filteredEvents.forEach((event) => {
     const { eventName } = event;
 
     // init event listeners
     context.listeners.add(target, eventName, (e) => {
+      if (isGrabEvent) {
+        context.grab.isEntered = false;
+      }
+
       // returned params
       const returnedParams = [
         context,

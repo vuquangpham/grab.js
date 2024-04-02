@@ -21,6 +21,11 @@ export default class Instance {
     // contains: name, target, handler
     this.listeners = new Listeners();
 
+    // grab event
+    this.grab = {
+      isEntered: false,
+    };
+
     // init
     this.hasInitialized = init(this);
     if (!this.hasInitialized) return null;
