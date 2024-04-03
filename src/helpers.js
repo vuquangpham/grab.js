@@ -226,7 +226,7 @@ const initUpEvent = (context, eventKey, filteredEvents) => {
 
         // clear pointer
         context.grab.pointer.x.start = 0;
-        context.grab.pointer.x.start = 0;
+        context.grab.pointer.y.start = 0;
         context.grab.pointer.x.end = 0;
         context.grab.pointer.y.end = 0;
 
